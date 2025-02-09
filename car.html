@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>طباعة الكوبونات</title>
+    <style>
+        @media print {
+            @page { size: A4; margin: 10mm; }
+            body { margin: 0; }
+            .no-print { display: none; }
+        }
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            direction: rtl;
+        }
+        .container {
+            width: 21cm;
+            margin: auto;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+        .card {
+            width: 19cm;
+            height: 5cm;
+            border: 1px solid black;
+            margin: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            page-break-inside: avoid;
+            background-image: url('background.jpg'); /* استبدل باسم ملف الصورة */
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+        .card .section {
+            width: 49%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px;
+            color: red;
+        }
+        .text-box {
+            color: red;
+            flex: 1;
+           
+        }
+        .divider {
+            width: 1px;
+            height: 90%;
+            background: black;
+        }
+        .input-box {
+            display: inline-block;
+            width:200px;
+            height: 25px;
+            border: 1px solid black;
+            text-align: right;
+            color: red;
+            font-size: 12px;
+            font-weight: bold;
+            padding-right: 5px;
+            line-height: 25px;
+        }
+        .barcode {
+            color: red;
+            height: 30px !important;
+            width: 100% !important;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.0/dist/JsBarcode.all.min.js"></script>
+</head>
+<body>
+    <h1>طباعة الكوبونات</h1>
+
+    <div class="no-print">
+        <label for="startNumber">رقم البداية:</label>
+        <input type="number" id="startNumber" value="1" min="1">
+        
+        <label for="endNumber">رقم النهاية:</label>
+        <input type="number" id="endNumber" value="5" min="1">
+
+        <button onclick="generateCoupons()">إنشاء الكوبونات</button>
+        <button onclick="window.print()">طباعة</button>
+    </div>
+
+    <div class="container" id="couponContainer"></div>
+
+    <script>
+        function generateCoupons() {
+            let start = parseInt(document.getElementById("startNumber").value);
+            let end = parseInt(document.getElementById("endNumber").value);
+
+            if (isNaN(start) || isNaN(end) || start <= 0 || end <= 0 || start > end) {
+                alert("يرجى إدخال أرقام صحيحة!");
+                return;
+            }
+
+            let container = document.getElementById("couponContainer");
+            container.innerHTML = "";
+            
+            for (let i = start; i <= end; i++) {
+                let couponNumber = i.toString().padStart(8, '0');
+               
+
+                let card = document.createElement("div");
+                card.className = "card";
+                card.innerHTML = `
+                    <div class="section">
+                        <div class="text-box">
+                            <p><strong>جوائز سندباد السحب الرابع</strong></p>
+                            <p><strong>الاسم:</strong> <span class="input-box"></span></p>
+                            <p><strong>تلفون:</strong> <span class="input-box"></span></p>
+                            <p><strong>الكوبون:</strong> ${couponNumber}</p>
+                           
+                        </div>
+                    </div>
+                    <div class="divider"></div>
+                    <div class="section">
+                        <div class="text-box">
+                            <p><strong>جوائز سندباد السحب الرابع</strong></p>
+                            <p><strong>الاسم :</strong> <span class="input-box"></span></p>
+                            <p><strong>تلفون:</strong> <span class="input-box"></span></p>
+                            <p><strong>الكوبون:</strong> ${couponNumber}</p>
+                            
+                        </div>
+                    </div>
+                `;
+
+                container.appendChild(card);
+                
+            }
+        }
+
+        generateCoupons();
+    </script>
+</body>
+</html>
